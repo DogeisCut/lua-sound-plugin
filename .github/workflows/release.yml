@@ -3,7 +3,7 @@ name: Release Plugins
 on:
   push:
     branches:
-      - main
+      - master
     tags:
       - 'v*'
 
@@ -59,4 +59,4 @@ jobs:
             LuaSound-macOS.zip
             LuaSound-Ubuntu.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
