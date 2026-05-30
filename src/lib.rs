@@ -24,6 +24,14 @@ use std::sync::{Arc, Mutex};
 // - fix not being able to see the top of the script if it gets too long
 // - Panic button
 // - Infinite loop defence
+// - set up github releases
+// - proper versioning
+// - build script to automatically put it in my vst3 plugins folder
+// - move this to a README.md or TODO.md probably
+
+// FUTURE UPDATE IDEAS:
+// - slider/function update that lets you make UI elements in the plugin and bind them to variables.
+// - Instrument tools instead of just effects.
 
 #[derive(Clone)]
 struct AudioContext {
