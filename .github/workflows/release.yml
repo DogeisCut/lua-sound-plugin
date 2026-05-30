@@ -38,16 +38,16 @@ jobs:
 
       - name: Zip Artifacts (Windows)
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path target/bundled/* -DestinationPath LuaSound-Windows.zip
+        run: Compress-Archive -Path target/bundled/* -DestinationPath LuaSound-${{ github.ref_name }}-Windows.zip
 
       - name: Zip Artifacts (Mac/Linux)
         if: runner.os != 'Windows'
-        run: cd target/bundled && zip -r ../../LuaSound-${{ runner.os }}.zip ./*
+        run: cd target/bundled && zip -r ../../LuaSound-${{ github.ref_name }}-${{ runner.os }}.zip ./*
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: LuaSound-${{ runner.os }}
+          name: LuaSound-${{ github.ref_name }}-${{ runner.os }}
           path: LuaSound-*.zip
           retention-days: 14
 
