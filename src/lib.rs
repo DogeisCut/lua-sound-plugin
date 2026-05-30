@@ -7,6 +7,20 @@ use std::collections::HashMap;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
+// TODO:
+// - Syntax highlighting (evil)
+// - Fix FL Studio ignoring inputs (other daws can type in the code box just fine??)
+// - Align code to top of box
+// - Make text line (i forget what its called, the | thingy that shows where you are editing the text) not really hard to see
+// - Fix saving of lua text
+// - Fix saving of advanced mode
+// - Presets and presets system
+// - make the ui less weird? the buttons kinda go off the bottom (though i kinda like that look?) and the simple/advanced mode thing is kind of weird (maybe figure it out from the script itself)
+// - Indication for if the script hasn been ran/compiled yet.
+// - Reset button that sets it back to the template script (though that can just be built into presets)
+// - fix help text at the top (the one that shows what function you are supposed to use)
+// - seperate into multiple scripts (this one is getting really long :/ )
+
 #[derive(Clone)]
 struct AudioContext {
     sample_rate: f32,
