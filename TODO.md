@@ -33,3 +33,4 @@ None of these are in any specific order.
 ## Future Features
 - [ ] UI bindings (create GUI elements and bind GUI controls to Lua variables)
 - [ ] Instrument support (create custom instruments rather than just effects, MIDI Input)
+- [ ] Audio processing utility functions/variables, like FFT.

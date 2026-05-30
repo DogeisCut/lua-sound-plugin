@@ -68,7 +68,7 @@ pub fn reset_to_defaults() -> std::io::Result<()> {
     std::fs::create_dir_all(&dir)?;
 
     for (name, script) in BUNDLED_PRESETS {
-        let filename = format!("{}.lua", name.to_lowercase().replace(' ', "_"));
+        let filename = format!("{}.lua", name);
         std::fs::write(dir.join(filename), script)?;
     }
 
@@ -79,6 +79,13 @@ pub fn save_preset(name: &str, script: &str) -> std::io::Result<()> {
     let dir = preset_dir()
         .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "No data dir found"))?;
     std::fs::create_dir_all(&dir)?;
-    let filename = format!("{}.lua", name.to_lowercase().replace(' ', "_"));
+    let filename = format!("{}.lua", name);
     std::fs::write(dir.join(filename), script)
+}
+
+pub fn delete_preset(name: &str) -> std::io::Result<()> {
+    let dir = preset_dir()
+        .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "No data dir found"))?;
+    let filename = format!("{}.lua", name);
+    std::fs::remove_file(dir.join(filename))
 }

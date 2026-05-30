@@ -1,4 +1,4 @@
-local bit_depth      = 8  -- bit depth (1-16, lower = crunchier)
+local bit_depth       = 8  -- bit depth (1-16, lower = crunchier)
 local sample_rate_div = 4  -- sample rate divisor (1 = no decimation, higher = more lo-fi)
 
 local held_l = 0.0

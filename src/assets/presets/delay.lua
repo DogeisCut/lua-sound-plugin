@@ -1,5 +1,5 @@
 local delay_time_ms = 500.0 
-local feedback = 0.5
+local feedback      = 0.5
 
 function process_block(left, right, ctx, dsp)     
     local delay_samples = math.floor((delay_time_ms / 1000.0) * ctx.sample_rate)

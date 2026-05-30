@@ -1,7 +1,7 @@
-local rate_hz      = 0.8   -- LFO speed in Hz
-local depth_ms     = 10.0  -- modulation depth in milliseconds
+local rate_hz       = 0.8   -- LFO speed in Hz
+local depth_ms      = 10.0  -- modulation depth in milliseconds
 local base_delay_ms = 20.0  -- base delay time in milliseconds
-local mix          = 0.5   -- wet/dry mix (0.0 = dry, 1.0 = fully wet)
+local mix           = 0.5   -- wet/dry mix (0.0 = dry, 1.0 = fully wet)
 
 local phase_l = 0.0
 local phase_r = math.pi  -- offset right channel for a wider stereo image
