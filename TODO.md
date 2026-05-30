@@ -7,17 +7,17 @@ None of these are in any specific order.
 - [ ] Syntax highlighting (might potentially be evil to implement)
 - [ ] Fix FL Studio ignoring inputs
 - [X] Align code to top of box
-- [ ] Improve text caret visibility
+- [X] Improve text caret visibility
 - [X] Fix code editor snapping back to bottom when selecting text
 - [X] Fix scrolling to the top of long scripts
-- [ ] Clean up UI button layout/overflow
+- [X] Clean up UI button layout/overflow
 - [X] Fix help/documentation text at the top
 - [X] Make UI less "weird" (Simple/Advanced mode should probably be infranced from the script itself)
 
 ## Core Engine and Stability
 - [ ] Infinite loop defense
 - [ ] Panic button
-- [ ] Save Lua text state
+- [X] Save Lua text state
 - [ ] Preset management system
 - [ ] Reset/Template button
 - [X] Refactor lib.rs into multiple modules

@@ -29,6 +29,9 @@ impl Model for EditorData {
         event.map(|e: &EditorEvent, _| match e {
             EditorEvent::SetScript(s) => {
                 self.script = s.clone();
+                if let Ok(mut store) = self.script_store.lock() {
+                    *store = s.to_string();
+                }
                 self.is_dirty = true;
             }
 

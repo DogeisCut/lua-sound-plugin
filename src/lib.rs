@@ -95,14 +95,14 @@ impl Plugin for LuaSound {
         let engine = self.engine.clone();
         let script_store = self.params.script.clone();
 
-        let initial_script = script_store.lock().unwrap().clone();
-
         create_vizia_editor(
             self.params.editor_state.clone(),
             ViziaTheming::Custom,
             move |cx, _| {
+                let current_script = script_store.lock().unwrap().clone();
+
                 EditorData {
-                    script: initial_script.clone(),
+                    script: current_script,
                     status: "Press Run to activate script".to_string(),
                     status_ok: true,
                     is_dirty: true,
@@ -143,6 +143,8 @@ impl Plugin for LuaSound {
                             FamilyOwned::Name("Courier New".to_string()),
                             FamilyOwned::Monospace,
                         ])
+                        .caret_color(Color::rgb(190, 160, 255))
+                        .selection_color(Color::rgba(120, 80, 200, 120))
                         .font_size(13.0)
                         .color(Color::rgb(210, 205, 235))
                         .background_color(Color::rgb(13, 10, 22))
