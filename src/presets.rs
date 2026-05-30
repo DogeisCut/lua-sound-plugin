@@ -59,9 +59,8 @@ pub fn load_presets() -> Vec<Preset> {
 }
 
 pub fn reset_to_defaults() -> std::io::Result<()> {
-    let dir = preset_dir().ok_or_else(|| {
-        std::io::Error::new(std::io::ErrorKind::NotFound, "No data dir found")
-    })?;
+    let dir = preset_dir()
+        .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "No data dir found"))?;
 
     if dir.exists() {
         std::fs::remove_dir_all(&dir)?;
@@ -77,9 +76,8 @@ pub fn reset_to_defaults() -> std::io::Result<()> {
 }
 
 pub fn save_preset(name: &str, script: &str) -> std::io::Result<()> {
-    let dir = preset_dir().ok_or_else(|| {
-        std::io::Error::new(std::io::ErrorKind::NotFound, "No data dir found")
-    })?;
+    let dir = preset_dir()
+        .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "No data dir found"))?;
     std::fs::create_dir_all(&dir)?;
     let filename = format!("{}.lua", name.to_lowercase().replace(' ', "_"));
     std::fs::write(dir.join(filename), script)
