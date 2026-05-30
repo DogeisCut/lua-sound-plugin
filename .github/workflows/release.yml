@@ -33,7 +33,7 @@ jobs:
           libxcb-util-dev libxcb-xfixes0-dev libxkbcommon-dev libxkbcommon-x11-dev
 
       - name: Build and Bundle
-        run: cargo xtask bundle lua-sound --release
+        run: cargo xtask bundle lua-sound --release --verbose
 
       - name: Zip Artifacts (Windows)
         if: runner.os == 'Windows'
