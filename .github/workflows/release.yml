@@ -30,8 +30,9 @@ jobs:
           libxcb1-dev libxcb-dri2-0-dev libxcb-dri3-dev libxcb-glx0-dev libxcb-icccm4-dev \
           libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-render0-dev \
           libxcb-render-util0-dev libxcb-shape0-dev libxcb-shm0-dev libxcb-sync-dev \
-          libxcb-util-dev libxcb-xfixes0-dev libxkbcommon-dev libxkbcommon-x11-dev
-
+          libxcb-util-dev libxcb-xfixes0-dev libxkbcommon-dev libxkbcommon-x11-dev \
+          libxcursor-dev
+      
       - name: Build and Bundle
         run: cargo xtask bundle lua-sound --release --verbose
 
