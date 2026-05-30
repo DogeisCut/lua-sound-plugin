@@ -14,17 +14,33 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Dependencies (Linux only)
+        if: runner.os == 'Linux'
+        run: | 
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libgl-dev libjack-dev libx11-xcb-dev \
+          libxcb1-dev libxcb-dri2-0-dev libxcb-dri3-dev libxcb-glx0-dev libxcb-icccm4-dev \
+          libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-render0-dev \
+          libxcb-render-util0-dev libxcb-shape0-dev libxcb-shm0-dev libxcb-sync-dev \
+          libxcb-util-dev libxcb-xfixes0-dev libxkbcommon-dev libxkbcommon-x11-dev \
+          libxcursor-dev
       
       - name: Build and Bundle
-        run: cargo xtask bundle lua-sound --release
+        run: cargo xtask bundle lua-sound --release --verbose
 
-      - name: Zip Artifacts
+      - name: Zip Artifacts (Windows)
         if: runner.os == 'Windows'
         run: Compress-Archive -Path target/bundled/* -DestinationPath LuaSound-Windows.zip
-      - name: Zip Artifacts
+
+      - name: Zip Artifacts (Mac/Linux)
         if: runner.os != 'Windows'
         run: cd target/bundled && zip -r ../../LuaSound-${{ runner.os }}.zip ./*
 
@@ -33,6 +49,7 @@ jobs:
         with:
           name: LuaSound-${{ runner.os }}
           path: LuaSound-*.zip
+          retention-days: 14
 
   release:
     name: Create GitHub Release
