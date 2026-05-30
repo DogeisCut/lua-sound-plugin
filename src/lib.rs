@@ -1,5 +1,6 @@
 mod editor;
 mod engine;
+mod presets;
 
 use editor::{EditorData, EditorEvent};
 use engine::{AudioContext, LuaEngine};
@@ -103,6 +104,7 @@ impl Plugin for LuaSound {
 
                 EditorData {
                     script: current_script,
+                    presets: presets::load_presets(),
                     status: "Press Run to activate script".to_string(),
                     status_ok: true,
                     is_dirty: true,
@@ -138,6 +140,10 @@ impl Plugin for LuaSound {
 
                     Textbox::new_multiline(cx, EditorData::script, false)
                         .on_edit(|cx, text| cx.emit(EditorEvent::SetScript(text)))
+                        .on_mouse_down(|cx, _| {
+                            cx.focus();
+                            cx.capture();
+                        })
                         .font_family(vec![
                             FamilyOwned::Name("Consolas".to_string()),
                             FamilyOwned::Name("Courier New".to_string()),
@@ -277,7 +283,7 @@ impl ClapPlugin for LuaSound {
 impl Vst3Plugin for LuaSound {
     const VST3_CLASS_ID: [u8; 16] = *b"DogeisLuaSound67";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
-        &[Vst3SubCategory::Fx, Vst3SubCategory::Distortion];
+        &[Vst3SubCategory::Generator, Vst3SubCategory::Tools];
 }
 
 nih_export_clap!(LuaSound);

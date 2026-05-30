@@ -1,4 +1,4 @@
-use crate::engine::LuaEngine;
+use crate::{engine::LuaEngine, presets::Preset};
 use nih_plug_vizia::vizia::prelude::*;
 use std::sync::{Arc, Mutex};
 
@@ -18,6 +18,7 @@ pub struct EditorData {
     pub status: String,
     pub status_ok: bool,
     pub is_dirty: bool,
+    pub presets: Vec<Preset>,
     #[lens(ignore)]
     pub engine: Arc<Mutex<Option<LuaEngine>>>,
     #[lens(ignore)]

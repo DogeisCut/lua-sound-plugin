@@ -11,4 +11,4 @@ rfd = { version = "0.14", features = ["async-std"] }
 mlua = { version = "0.10", features = ["lua54", "vendored", "send"] }
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug" }
 nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug" }
-image = "0.24"
+dirs = "5"
