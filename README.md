@@ -40,7 +40,7 @@ end
 ```
 
 ## Building
-This project is built using Rust (https://www.rust-lang.org/) and the nih-plug (https://nih-plug.rs/) framework.
+This project is built using [Rust](https://www.rust-lang.org/) and the [nih-plug](https://nih-plug.rs/) framework.
 
 1. Install Rust.
 2. Clone the repository.
