@@ -21,7 +21,7 @@ None of these are in any specific order.
 - [ ] Save "Advanced Mode" toggle state
 - [ ] Preset management system
 - [ ] Reset/Template button
-- [ ] Refactor lib.rs into multiple modules
+- [X] Refactor lib.rs into multiple modules
 - [ ] "Script not ran/compiled yet" indicator
 
 ## DevOps and Maintenance

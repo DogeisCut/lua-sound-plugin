@@ -1,122 +1,25 @@
-use mlua::prelude::*;
-use mlua::UserData;
+mod editor;
+mod engine;
+
+use editor::{EditorData, EditorEvent};
+use engine::{AudioContext, LuaEngine};
 use nih_plug::prelude::*;
 use nih_plug_vizia::vizia::prelude::*;
 use nih_plug_vizia::{create_vizia_editor, ViziaState, ViziaTheming};
-use std::collections::HashMap;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
-#[derive(Clone)]
-struct AudioContext {
-    sample_rate: f32,
-    tempo: f32,
-    is_playing: bool,
-}
+pub const DEFAULT_SCRIPT: &str = r#"-- Simple Mode
+function process(left, right)
+    return left, right
+end"#;
 
-impl UserData for AudioContext {
-    fn add_fields<F: mlua::UserDataFields<Self>>(fields: &mut F) {
-        fields.add_field_method_get("sample_rate", |_, this| Ok(this.sample_rate));
-        fields.add_field_method_get("tempo", |_, this| Ok(this.tempo));
-        fields.add_field_method_get("is_playing", |_, this| Ok(this.is_playing));
-    }
-
-    fn add_methods<M: LuaUserDataMethods<Self>>(_: &mut M) {}
-
-    fn register(registry: &mut LuaUserDataRegistry<Self>) {
-        Self::add_fields(registry);
-        Self::add_methods(registry);
-    }
-}
-
-#[derive(Clone)]
-struct DspAPI {
-    buffers: Arc<Mutex<HashMap<String, (Vec<f32>, usize)>>>,
-}
-
-impl DspAPI {
-    fn new() -> Self {
-        Self {
-            buffers: Arc::new(Mutex::new(HashMap::new())),
-        }
-    }
-}
-
-impl UserData for DspAPI {
-    fn add_methods<M: mlua::UserDataMethods<Self>>(methods: &mut M) {
-        methods.add_method(
-            "delay_read",
-            |_, this, (name, delay_samples): (String, usize)| {
-                let mut map = this.buffers.lock().unwrap();
-                let (buffer, write_idx) = map
-                    .entry(name)
-                    .or_insert_with(|| (vec![0.0; 44100 * 10], 0));
-
-                let len = buffer.len();
-                let mut read_idx = (*write_idx as isize) - (delay_samples as isize);
-                while read_idx < 0 {
-                    read_idx += len as isize;
-                }
-
-                Ok(buffer[read_idx as usize % len])
-            },
-        );
-
-        methods.add_method("delay_write", |_, this, (name, value): (String, f32)| {
-            let mut map = this.buffers.lock().unwrap();
-            let (buffer, write_idx) = map
-                .entry(name)
-                .or_insert_with(|| (vec![0.0; 44100 * 10], 0));
-
-            buffer[*write_idx] = value;
-            *write_idx = (*write_idx + 1) % buffer.len();
-            Ok(())
-        });
-    }
-
-    fn add_fields<F: LuaUserDataFields<Self>>(_: &mut F) {}
-
-    fn register(registry: &mut LuaUserDataRegistry<Self>) {
-        Self::add_fields(registry);
-        Self::add_methods(registry);
-    }
-}
-
-struct LuaEngine {
-    lua: Lua,
-    dsp: DspAPI,
-}
-
-impl LuaEngine {
-    fn new() -> LuaResult<Self> {
-        Ok(Self {
-            lua: Lua::new(),
-            dsp: DspAPI::new(),
-        })
-    }
-
-    fn load_script(&self, code: &str) -> LuaResult<()> {
-        self.lua.load(code).exec()
-    }
-
-    fn process_sample(&self, left: f32, right: f32) -> LuaResult<(f32, f32)> {
-        let process: LuaFunction = self.lua.globals().get("process")?;
-        let (l, r): (f32, f32) = process.call((left, right))?;
-        Ok((l, r))
-    }
-
-    fn process_block(
-        &self,
-        left: Vec<f32>,
-        right: Vec<f32>,
-        ctx: AudioContext,
-    ) -> LuaResult<(Vec<f32>, Vec<f32>)> {
-        let process_block: LuaFunction = self.lua.globals().get("process_block")?;
-        let (l, r): (Vec<f32>, Vec<f32>) =
-            process_block.call((left, right, ctx, self.dsp.clone()))?;
-        Ok((l, r))
-    }
-}
+pub const ADVANCED_SCRIPT: &str = r#"-- Advanced Mode
+-- block sizes vary (e.g. 128, 512 samples)
+function process_block(left, right, ctx, dsp)
+    -- example: pass through
+    return left, right
+end"#;
 
 struct LuaSound {
     params: Arc<LuaSoundParams>,
@@ -135,18 +38,6 @@ struct LuaSoundParams {
     pub is_advanced: Arc<AtomicBool>,
 }
 
-const DEFAULT_SCRIPT: &str = r#"-- Simple Mode
-function process(left, right)
-    return left, right
-end"#;
-
-const ADVANCED_SCRIPT: &str = r#"-- Advanced Mode
--- block sizes vary (e.g. 128, 512 samples)
-function process_block(left, right, ctx, dsp)
-    -- example: pass through
-    return left, right
-end"#;
-
 impl Default for LuaSound {
     fn default() -> Self {
         Self {
@@ -163,127 +54,6 @@ impl Default for LuaSoundParams {
             script: Arc::new(Mutex::new(DEFAULT_SCRIPT.to_string())),
             is_advanced: Arc::new(AtomicBool::new(false)),
         }
-    }
-}
-
-#[derive(Debug)]
-enum EditorEvent {
-    SetScript(String),
-    Apply,
-    Import,
-    Export,
-    Imported(String),
-    Exported,
-    ToggleMode,
-}
-
-#[derive(Lens, Clone)]
-struct EditorData {
-    script: String,
-    status: String,
-    status_ok: bool,
-    is_advanced: bool,
-    #[lens(ignore)]
-    engine: Arc<Mutex<Option<LuaEngine>>>,
-    #[lens(ignore)]
-    script_store: Arc<Mutex<String>>,
-    #[lens(ignore)]
-    is_advanced_store: Arc<AtomicBool>,
-}
-
-impl Model for EditorData {
-    fn event(&mut self, _cx: &mut EventContext, event: &mut Event) {
-        event.map(|e: &EditorEvent, _| match e {
-            EditorEvent::SetScript(s) => {
-                self.script = s.clone();
-            }
-
-            EditorEvent::Apply => {
-                *self.script_store.lock().unwrap() = self.script.clone();
-
-                let result = LuaEngine::new().and_then(|eng| {
-                    eng.load_script(&self.script)?;
-                    Ok(eng)
-                });
-
-                match result {
-                    Ok(eng) => {
-                        *self.engine.lock().unwrap() = Some(eng);
-                        self.status = "Script loaded".to_string();
-                        self.status_ok = true;
-                    }
-                    Err(e) => {
-                        *self.engine.lock().unwrap() = None;
-                        self.status = format!("Error: {}", e);
-                        self.status_ok = false;
-                    }
-                }
-            }
-
-            EditorEvent::ToggleMode => {
-                self.is_advanced = !self.is_advanced;
-                self.is_advanced_store
-                    .store(self.is_advanced, Ordering::Relaxed);
-
-                if self.script.trim() == DEFAULT_SCRIPT
-                    || self.script.trim() == ADVANCED_SCRIPT
-                    || self.script.is_empty()
-                {
-                    self.script = if self.is_advanced {
-                        ADVANCED_SCRIPT.to_string()
-                    } else {
-                        DEFAULT_SCRIPT.to_string()
-                    };
-                }
-
-                self.status = if self.is_advanced {
-                    "Switched to Advanced Mode".to_string()
-                } else {
-                    "Switched to Simple Mode".to_string()
-                };
-                self.status_ok = true;
-            }
-
-            EditorEvent::Import => {
-                _cx.spawn(|cx| {
-                    if let Some(path) = rfd::FileDialog::new()
-                        .add_filter("Lua Script", &["lua", "txt"])
-                        .pick_file()
-                    {
-                        if let Ok(content) = std::fs::read_to_string(path) {
-                            let _ = cx.emit(EditorEvent::Imported(content));
-                        }
-                    }
-                });
-            }
-
-            EditorEvent::Imported(content) => {
-                self.script = content.clone();
-                self.status = "Script imported. Press Run.".to_string();
-                self.status_ok = true;
-            }
-
-            EditorEvent::Export => {
-                let script_copy = self.script.clone();
-
-                _cx.spawn(|cx| {
-                    if let Some(path) = rfd::FileDialog::new()
-                        .add_filter("Lua Script", &["lua"])
-                        .set_file_name("effect.lua")
-                        .save_file()
-                    {
-                        if std::fs::write(path, script_copy).is_ok() {
-                            let _ = cx.emit(EditorEvent::Exported);
-                        }
-                    }
-                });
-            }
-
-            EditorEvent::Exported => {
-                self.status = "Script exported".to_string();
-                self.status_ok = true;
-            }
-        });
     }
 }
 
