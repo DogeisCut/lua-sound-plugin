@@ -20,6 +20,10 @@ use std::sync::{Arc, Mutex};
 // - Reset button that sets it back to the template script (though that can just be built into presets)
 // - fix help text at the top (the one that shows what function you are supposed to use)
 // - seperate into multiple scripts (this one is getting really long :/ )
+// - fix editor snapping back down to the bottom if you click something
+// - fix not being able to see the top of the script if it gets too long
+// - Panic button
+// - Infinite loop defence
 
 #[derive(Clone)]
 struct AudioContext {
