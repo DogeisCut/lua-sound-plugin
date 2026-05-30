@@ -1,0 +1,14 @@
+[package]
+name = "lua-sound-plugin"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+rfd = { version = "0.14", features = ["async-std"] }
+mlua = { version = "0.10", features = ["lua54", "vendored", "send"] }
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug" }
+nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug" }
+image = "0.24"
