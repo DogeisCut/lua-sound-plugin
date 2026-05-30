@@ -146,8 +146,9 @@ impl Plugin for LuaSound {
                             .border_radius(Pixels(3.0))
                             .left(Stretch(1.0))
                             .right(Pixels(10.0))
-                            .top(Pixels(4.0))
-                            .bottom(Pixels(4.0));
+                            .top(Stretch(1.0))
+                            .bottom(Stretch(1.0))
+                            .height(Pixels(20.0));
                         })
                         .height(Pixels(28.0))
                         .background_color(Color::rgb(18, 10, 32))
@@ -269,11 +270,11 @@ impl Plugin for LuaSound {
                                             },
                                             move |cx| {
                                                 Label::new(cx, item.map(|p| p.name.clone()))
+                                                    .color(Color::rgb(200, 200, 200))
                                                     .width(Stretch(1.0))
                                             },
                                         )
                                         .background_color(Color::rgb(40, 45, 60))
-                                        .color(Color::rgb(200, 200, 200))
                                         .border_radius(Pixels(3.0))
                                         .width(Stretch(1.0));
 
@@ -283,24 +284,27 @@ impl Plugin for LuaSound {
                                                 let current_name = item.get(cx).name.clone();
                                                 cx.emit(EditorEvent::InitiateDelete(current_name));
                                             },
-                                            |cx| Label::new(cx, "X"),
+                                            |cx| {
+                                                Label::new(cx, "X").color(Color::rgb(200, 200, 200))
+                                            },
                                         )
                                         .background_color(Color::rgb(230, 90, 90))
-                                        .color(Color::rgb(200, 200, 200))
                                         .border_radius(Pixels(3.0))
                                         .left(Pixels(4.0))
-                                        .width(Pixels(30.0));
+                                        .width(Pixels(20.0));
                                     })
-                                    .height(Pixels(30.0))
+                                    .height(Pixels(24.0))
                                     .child_top(Stretch(1.0))
                                     .child_bottom(Stretch(1.0));
                                 });
                             })
                             .background_color(Color::rgb(20, 20, 30))
                             .position_type(PositionType::SelfDirected)
-                            .top(Pixels(30.0))
-                            .right(Pixels(0.0))
-                            .width(Pixels(200.0));
+                            .left(Stretch(1.0))
+                            .right(Pixels(10.0))
+                            .top(Pixels(32.0))
+                            .width(Pixels(200.0))
+                            .child_space(Pixels(10.0));
                         }
                     });
 
@@ -340,11 +344,12 @@ impl Plugin for LuaSound {
                                     .child_space(Stretch(1.0));
                                 })
                                 .background_color(Color::rgb(30, 30, 40))
-                                .border_radius(Pixels(5.0))
+                                .border_radius(Pixels(8.0))
                                 .width(Pixels(220.0))
                                 .height(Pixels(100.0))
                                 .child_space(Stretch(1.0));
-                            });
+                            })
+                            .child_space(Stretch(1.0));
                         }
                     });
 
@@ -397,11 +402,12 @@ impl Plugin for LuaSound {
                                     .child_space(Stretch(1.0));
                                 })
                                 .background_color(Color::rgb(30, 30, 40))
-                                .border_radius(Pixels(5.0))
+                                .border_radius(Pixels(8.0))
                                 .width(Pixels(240.0))
                                 .height(Pixels(130.0))
-                                .child_space(Stretch(1.0));
-                            });
+                                .child_space(Pixels(15.0));
+                            })
+                            .child_space(Stretch(1.0));
                         }
                     });
                 });
