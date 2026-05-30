@@ -68,6 +68,58 @@ impl UserData for DspAPI {
             *write_idx = (*write_idx + 1) % buffer.len();
             Ok(())
         });
+
+        methods.add_method("lerp_read", |_, this, (name, delay_samples): (String, f32)| {
+            let map = this.buffers.lock().unwrap();
+            let (buffer, write_idx) = map.get(&name).ok_or(mlua::Error::runtime("Buffer not found"))?;
+            
+            let len = buffer.len() as f32;
+            let read_pos = (*write_idx as f32) - delay_samples;
+            
+            let pos = (read_pos % len + len) % len;
+            let i0 = pos.floor() as usize;
+            let i1 = (i0 + 1) % buffer.len();
+            let frac = pos.fract();
+
+            let y0 = buffer[i0];
+            let y1 = buffer[i1];
+            Ok(y0 + frac * (y1 - y0))
+        });
+
+        methods.add_method("buffer_clear", |_, this, name: String| {
+            if let Some((buffer, _)) = this.buffers.lock().unwrap().get_mut(&name) {
+                buffer.fill(0.0);
+            }
+            Ok(())
+        });
+
+        methods.add_method("buffer_len", |_, this, name: String| {
+            let map = this.buffers.lock().unwrap();
+            map.get(&name)
+                .map(|(b, _)| b.len())
+                .ok_or(mlua::Error::runtime("Buffer not found"))
+        });
+
+        methods.add_method("ms_to_samples", |_, _, ms: f32| {
+            Ok((ms / 1000.0) * 44100.0)
+        });
+
+        methods.add_method("clamp", |_, _, (val, min, max): (f32, f32, f32)| {
+            Ok(val.clamp(min, max))
+        });
+
+        methods.add_method("db_to_linear", |_, _, db: f32| {
+            Ok(10.0f32.powf(db / 20.0))
+        });
+
+        methods.add_method("tanh", |_, _, x: f32| {
+            Ok(x.tanh())
+        });
+
+        methods.add_method("map", |_, _, (val, in_min, in_max, out_min, out_max): (f32, f32, f32, f32, f32)| {
+            let norm = (val - in_min) / (in_max - in_min);
+            Ok(out_min + norm * (out_max - out_min))
+        });
     }
 
     fn add_fields<F: LuaUserDataFields<Self>>(_: &mut F) {}
@@ -101,6 +153,10 @@ impl LuaEngine {
         right: Vec<f32>,
         ctx: AudioContext,
     ) -> LuaResult<(Vec<f32>, Vec<f32>)> {
+        self.lua.set_hook(mlua::HookTriggers::new().every_nth_instruction(100000), |_, _| {
+            Err(mlua::Error::runtime("Script exceeded instruction limit"))
+        });
+
         let process_block: LuaFunction = self.lua.globals().get("process_block")?;
         let (l, r): (Vec<f32>, Vec<f32>) =
             process_block.call((left, right, ctx, self.dsp.clone()))?;

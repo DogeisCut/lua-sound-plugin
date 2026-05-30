@@ -31,6 +31,7 @@ None of these are in any specific order.
 - [X] Proper semantic versioning
 - [X] Automated build/install script
 - [ ] Create images for README
+- [ ] Make build not happen with no tag
 
 ## Future Features
 - [ ] UI bindings (create GUI elements and bind GUI controls to Lua variables)

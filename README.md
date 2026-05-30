@@ -18,6 +18,10 @@ The core logic and implementation are contained within lib.rs.
 
 - There's currently problems with FL Studio ignoring inputs when trying to type into text fields. This will be fixed as soon as possible.
 - The Presets menu has messed up styling, it's still usable but it doesn't look very great.
+- Crash potential with infinite loop programs
+- Saving a preset doesnt close the save modal.
+- Run button will always show enabled even if the script hasnt changed.
+- Modal backgrounds dont take up the full screen of the plugin
 
 ## Lua API
 
