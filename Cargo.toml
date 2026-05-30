@@ -1,6 +1,6 @@
 [package]
-name = "lua-sound-plugin"
-version = "0.1.0"
+name = "lua-sound"
+version = "1.0.0"
 edition = "2021"
 
 [lib]
@@ -12,3 +12,6 @@ mlua = { version = "0.10", features = ["lua54", "vendored", "send"] }
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug" }
 nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug" }
 dirs = "5"
+
+[workspace]
+members = ["xtask"]

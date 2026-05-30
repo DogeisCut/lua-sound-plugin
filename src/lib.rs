@@ -62,7 +62,7 @@ impl Plugin for LuaSound {
     const VENDOR: &'static str = "DogeisCut";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
-    const VERSION: &'static str = "1.0.0";
+    const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
     type SysExMessage = ();
     type BackgroundTask = ();

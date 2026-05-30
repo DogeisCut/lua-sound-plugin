@@ -13,21 +13,23 @@ None of these are in any specific order.
 - [X] Clean up UI button layout/overflow
 - [X] Fix help/documentation text at the top
 - [X] Make UI less "weird" (Simple/Advanced mode should probably be infranced from the script itself)
+- [ ] Make presets menu not ugly
+- [ ] Proper scrollbar for presets menu and code editor
 
 ## Core Engine and Stability
 - [ ] Infinite loop defense
 - [ ] Panic button
 - [X] Save Lua text state
-- [ ] Preset management system
-- [ ] Reset/Template button
+- [X] Preset management system
 - [X] Refactor lib.rs into multiple modules
 - [ ] "Script not ran/compiled yet" indicator
     - Run button should only be selectable if the script was changed
+    - It's technically there but broken right now...
 
 ## DevOps and Maintenance
-- [ ] Set up GitHub releases
-- [ ] Proper semantic versioning
-- [ ] Automated build/install script
+- [X] Set up GitHub releases
+- [X] Proper semantic versioning
+- [X] Automated build/install script
 - [ ] Create images for README
 
 ## Future Features

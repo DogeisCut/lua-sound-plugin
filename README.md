@@ -14,6 +14,11 @@ The core logic and implementation are contained within lib.rs.
 * **Delay Buffer API:** Built-in support for read/write delay buffers.
 * **Import/Export:** Save your creative scripts as .lua files.
 
+## Known Issues
+
+- There's currently problems with FL Studio ignoring inputs when trying to type into text fields. This will be fixed as soon as possible.
+- The Presets menu has messed up styling, it's still usable but it doesn't look very great.
+
 ## Lua API
 
 Define a process_block function for processing:
@@ -42,13 +47,10 @@ This project is built using [Rust](https://www.rust-lang.org/) and the [nih-plug
 3. Build the plugin using cargo:
 
 ```bash
-cargo build --release
+cargo xtask bundle LuaSound --release
 ```
 
-4. Rename the resulting `lua_sound_plugin.dll` file to `LuaSound.vst3`
-5. Place the file in `C:\Program Files\Common Files\VST3`
-
-This process will change in the future.
+4. Use your `.vst3` or `.clap` in `target/bundled/`
 
 ## License
 This project is licensed under the **GNU General Public License v3.0 (GPLv3)**. See the `LICENSE.txt` file for more details.
