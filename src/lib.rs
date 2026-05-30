@@ -276,7 +276,10 @@ impl Plugin for LuaSound {
                                         )
                                         .background_color(Color::rgb(40, 45, 60))
                                         .border_radius(Pixels(3.0))
-                                        .width(Stretch(1.0));
+                                        .width(Pixels(64.0))
+                                        .child_left(Pixels(8.0))
+                                        .child_top(Stretch(1.0))
+                                        .child_bottom(Stretch(1.0));
 
                                         Button::new(
                                             cx,
@@ -285,17 +288,22 @@ impl Plugin for LuaSound {
                                                 cx.emit(EditorEvent::InitiateDelete(current_name));
                                             },
                                             |cx| {
-                                                Label::new(cx, "X").color(Color::rgb(200, 200, 200))
+                                                Label::new(cx, "X")
+                                                    .color(Color::rgb(200, 200, 200))
+                                                    .font_size(10.0)
                                             },
                                         )
                                         .background_color(Color::rgb(230, 90, 90))
                                         .border_radius(Pixels(3.0))
-                                        .left(Pixels(4.0))
-                                        .width(Pixels(20.0));
+                                        .width(Pixels(16.0))
+                                        .height(Pixels(16.0))
+                                        .left(Pixels(6.0))
+                                        .top(Stretch(1.0))
+                                        .bottom(Stretch(1.0))
+                                        .child_space(Stretch(1.0));
                                     })
-                                    .height(Pixels(24.0))
-                                    .child_top(Stretch(1.0))
-                                    .child_bottom(Stretch(1.0));
+                                    .height(Pixels(26.0))
+                                    .width(Stretch(1.0));
                                 });
                             })
                             .background_color(Color::rgb(20, 20, 30))
