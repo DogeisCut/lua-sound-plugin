@@ -6,23 +6,23 @@ None of these are in any specific order.
 ## UI and Editor Experience
 - [ ] Syntax highlighting (might potentially be evil to implement)
 - [ ] Fix FL Studio ignoring inputs
-- [ ] Align code to top of box
+- [X] Align code to top of box
 - [ ] Improve text caret visibility
-- [ ] Fix code editor snapping back to bottom when selecting text
-- [ ] Fix scrolling to the top of long scripts
+- [X] Fix code editor snapping back to bottom when selecting text
+- [X] Fix scrolling to the top of long scripts
 - [ ] Clean up UI button layout/overflow
-- [ ] Fix help/documentation text at the top
-- [ ] Make UI less "weird" (Simple/Advanced mode should probably be infranced from the script itself)
+- [X] Fix help/documentation text at the top
+- [X] Make UI less "weird" (Simple/Advanced mode should probably be infranced from the script itself)
 
 ## Core Engine and Stability
 - [ ] Infinite loop defense
 - [ ] Panic button
 - [ ] Save Lua text state
-- [ ] Save "Advanced Mode" toggle state
 - [ ] Preset management system
 - [ ] Reset/Template button
 - [X] Refactor lib.rs into multiple modules
 - [ ] "Script not ran/compiled yet" indicator
+    - Run button should only be selectable if the script was changed
 
 ## DevOps and Maintenance
 - [ ] Set up GitHub releases

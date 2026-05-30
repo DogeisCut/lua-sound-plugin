@@ -95,12 +95,6 @@ impl LuaEngine {
         self.lua.load(code).exec()
     }
 
-    pub fn process_sample(&self, left: f32, right: f32) -> LuaResult<(f32, f32)> {
-        let process: LuaFunction = self.lua.globals().get("process")?;
-        let (l, r): (f32, f32) = process.call((left, right))?;
-        Ok((l, r))
-    }
-
     pub fn process_block(
         &self,
         left: Vec<f32>,
