@@ -112,10 +112,6 @@ impl UserData for DspAPI {
             Ok(10.0f32.powf(db / 20.0))
         });
 
-        methods.add_method("tanh", |_, _, x: f32| {
-            Ok(x.tanh())
-        });
-
         methods.add_method("map", |_, _, (val, in_min, in_max, out_min, out_max): (f32, f32, f32, f32, f32)| {
             let norm = (val - in_min) / (in_max - in_min);
             Ok(out_min + norm * (out_max - out_min))
